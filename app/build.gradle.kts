@@ -5,22 +5,18 @@ plugins {
 
 android {
     namespace = "com.sceventhunters.sceventfishing"
-    // ИСПРАВЛЕНО: 36 — это preview, GitHub Actions её не находит.
-    // 35 — стабильная версия, которую SDK manager скачивает без проблем.
     compileSdk = 35
 
     defaultConfig {
         applicationId = "com.sceventhunters.sceventfishing"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 5
         versionName = "5.0-tsu"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // ИСПРАВЛЕНО: ограничиваем сборку только arm64-v8a.
-        // APK останется с именем app-debug.apk, но внутри будут только
-        // нативные библиотеки под arm64. x86/armeabi-v7a будут вырезаны.
+        // Только arm64-v8a
         ndk {
             abiFilters += "arm64-v8a"
         }
@@ -36,16 +32,11 @@ android {
         }
     }
 
-    // ИСПРАВЛЕНО: Java 8 не поддерживается современным AGP + Compose.
-    // Kotlin/Compose требуют минимум Java 11, стабильно работает на 17.
-    // Если оставить 1.8 — сборка упадёт с ошибкой про desugaring / kotlin.
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    // ИСПРАВЛЕНО: явно указываем Kotlin использовать ту же JVM-цель,
-    // иначе Gradle ругается на несоответствие jvmTarget и compileOptions.
     kotlinOptions {
         jvmTarget = "17"
     }
@@ -55,14 +46,8 @@ android {
         viewBinding = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
-
     packaging {
         resources {
-            // ИСПРАВЛЕНО: расширен список исключений — иначе сборка падает
-            // на дубликатах META-INF/LICENSE, NOTICE, DEPENDENCIES и т.п.
             excludes += setOf(
                 "/META-INF/{AL2.0,LGPL2.1}",
                 "/META-INF/LICENSE",
@@ -76,8 +61,6 @@ android {
         }
     }
 
-    // ИСПРАВЛЕНО: отключаем lint во время сборки — на GitHub Actions
-    // он часто валит сборку на незначительных предупреждениях.
     lint {
         abortOnError = false
         checkReleaseBuilds = false
